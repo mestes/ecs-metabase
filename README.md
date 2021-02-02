@@ -25,6 +25,10 @@ It creates:
 - Task definition (FARGATE) for the metabase container configuration
 - ECS Service for the metabase task definition
 
+# Alternatives Considered
+- AWS Systems Manager Parameter Store could be used instead of AWS Secrets Manager. I chose AWS Secrets Manager because I was thinking I would explore the secrets rotation either now or as a follow up.
+- Hashicorp Consul, Vault could be used instead as well. In past experiences, I found getting those working to be pretty time heavy vs the results I could get just using AWS services.  
+
 # Assumptions / Notes
 
 Assumptions are minimized by making this self contained, however:
