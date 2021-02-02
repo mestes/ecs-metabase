@@ -25,13 +25,20 @@ It creates:
 - Task definition (FARGATE) for the metabase container configuration
 - ECS Service for the metabase task definition
 
-# Assumptions
+# Assumptions / Notes
 
-I tried to make this example rather self contained
+Assumptions are minimized by making this self contained, however:
+- It as assumed that the AWS credentials you configure have policies attached to allow this user to interact with all the AWS services listed in **Architecture**
+- It is assumed that this basic example could be easily applied in a multi-tenant environment, yet I do not actually model a true multi-tenant model here specifically. There are several approaches I can think of to create a true multi-tenant environment... I am only running single service, task, db and container counts in this prototype. I assume it can be easily extended as needed but did not have the time to fully test that out. However, the architecture here seems basically sound and I expect it would not take a lot of effort to model this out further.. 
+
+Notes
+- For this example, I just autogenerate the database password instead of setting it manually as a variable (or prompting)
+- I do have the database user set in a variable (terraform.tvars). It defaults to "metabase" but can be changed.
+- I do encrypt the database user string, store in AWS Secrets Manager and have it injected into the task. This is done as more of an example of how we may want to treat the username in a multi-tenant environment more than being particularly useful for this example 
+
 
 # Usage
 
-Make sure you have installed terraform! 
-Make sure you have configured your aws credentials! (if you have aws cli installed, run aws configure)
-
+`terraform init`
+`terraform apply`
 
