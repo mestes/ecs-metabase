@@ -39,6 +39,30 @@ Notes
 
 # Usage
 
-`terraform init`
-`terraform apply`
+1. `terraform init`
+2. `terraform apply`
 
+This will start to bring things up.
+
+3. remember to run `terraform destroy` when you are done!`
+
+# More Notes / Issues 
+- If you receive an error about reading the secrets when running apply/destroy, it seems to be just a race condition. Adding an depends_on block to the params seemed to have little to no effect. However, just repeat the apply/destroy and it will resolve.
+- Once the infrastructure is done applying, you will want to look at the "mde_mb" ECS Cluster in the AWS Management Console. Selecting the "web_ui" Service makes it really easy to see the logs in the "Logs" tab. 
+- We can check the logs to prove that the Secrets are getting correctly stored/read since metabase will log if the database connection validates or not.
+- Unfortunately, this is the only way to currently prove this, since the metabase container eventually exits (code 1) while trying to run migrations.
+- I tried using a regular old rds instance instead of the cluster, to rule out the problem coming from usage of the serverless aurora flavor of postgres, however it failed at the same spot.
+- I did discover that from the postres logs that postgres sees the issue as the client is closing the connection prematurely, which is probably due to the container unexpectedly exiting 
+- I considered the issue may be related to using Fargate tasks and/or the use of the awsvpc network mode, however from looking at the web it seems this has worked in the past from what I can tell. 
+- I tried various metabase release tags in addition to latest, which did alter how far along the metabase initialization would go before exiting, but I could not fully solve the issue.
+- I tried different values for java heap size, task cpu, task mem (sane in relation to each other). This had no affect on the error, so I do not think resource settings such as those are involved in the error.
+- Ultimately it really feels like a problem in the specific release tags I tried, but I stopped wasting time on this as the main purpose of the example is proven... the container connects to the db correctly using the secrets. 
+- I am so bothered at not solving this part!
+
+# Time Transparency
+- The goal was 3 hours. 
+- I was able to get things working just about as good as they are now in roughly 3 hours total time, except I neglected the README file at that point. 
+- I spent roughly another hour on documenting, exceeding the time goal significantly.
+_ I was super bothered by not having metabase up and running and decided to sleep on it, to see if I had any bright ideas. Had several which I tried out today. 
+- Those attempts were not a great use of time though since they didn't pan out and ultimately I spent more time on this today just trying to debug.
+- I then wanted to at least flesh out the docs a little more to cover some detailing of the things I tried.  
